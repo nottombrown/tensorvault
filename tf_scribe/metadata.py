@@ -1,4 +1,5 @@
 import collections
+import logging
 import os
 import os.path as osp
 import subprocess
@@ -6,8 +7,9 @@ from collections import OrderedDict
 
 import yaml
 
+logger = logging.getLogger('tf-scribe')
+
 def write_experiment_metadata(entrypoint, exp_dir):
-    print(entrypoint)
     os.makedirs(exp_dir, exist_ok=True)
     dump_experiment_metadata_to_file(osp.join(exp_dir, "experiment_metadata.yaml"), entrypoint)
 
@@ -26,19 +28,22 @@ def dump_experiment_metadata_to_file(yaml_path, entrypoint):
 
 def collect_git_data():
     d = collections.OrderedDict()
+
+    try:
+        # Repository is optional, so we fail silently if it's not available
+        d['repository'] = subprocess.check_output(["git", "remote", 'get-url', 'origin'],
+            stderr=open(os.devnull, 'wb')).decode('utf-8').strip()
+    except subprocess.CalledProcessError:
+        d['repository'] = '[unknown]'
+
     try:
         d['commit'] = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode('utf-8').strip()
         d['diff'] = subprocess.check_output(["git", "diff"]).decode('utf-8').strip()
     except subprocess.CalledProcessError:
-        print("WARNING: Failed to get commit information from git. Run `git status` to debug")
+        logger.warning("WARNING: Failed to get commit information from git. Run `git status` to debug")
         d['commit'] = '[unknown]'
         d['diff'] = '[unknown]'
-    try:
-        # Repository is optional, so we fail silently if it's not available
-        d['repository'] = subprocess.check_output(["git", "remote", 'get-url', 'origin'], stderr=open(os.devnull, 'wb')).decode(
-            'utf-8').strip()
-    except subprocess.CalledProcessError:
-        d['repository'] = '[unknown]'
+
     return d
 
 # PyYaml doesn't know how to serialized ordereddicts by default, so we add a representer

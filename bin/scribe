@@ -1,20 +1,20 @@
 #! /bin/python3
-import click
 import subprocess
 
-from tf_scribe import cli
+import click
+
+from tf_scribe.metadata import write_experiment_metadata
 
 @click.command()
+@click.argument('experiment_dir', type=click.Path())
 @click.argument('entrypoint', nargs=-1)
-def run(entrypoint):
+def run(experiment_dir, entrypoint):
     """
     Write the metadata for an experiment to a the root of the dir where its logs will be written.
     Then execute the experiment.
     """
-    exp_dir = "/tmp/experiment_123"
-
+    write_experiment_metadata(entrypoint, experiment_dir)
     subprocess.check_call(entrypoint)
-
 
 if __name__ == '__main__':
     run()
