@@ -27,24 +27,24 @@ def dump_experiment_metadata_to_file(yaml_path, entrypoint):
         yaml.dump(exp_data, f, default_flow_style=False)
 
 def collect_git_data():
-    d = collections.OrderedDict()
+    git_data = collections.OrderedDict()
 
     try:
         # Repository is optional, so we fail silently if it's not available
-        d['repository'] = subprocess.check_output(["git", "remote", 'get-url', 'origin'],
+        git_data['repository'] = subprocess.check_output(["git", "remote", 'get-url', 'origin'],
             stderr=open(os.devnull, 'wb')).decode('utf-8').strip()
     except subprocess.CalledProcessError:
-        d['repository'] = '[unknown]'
+        git_data['repository'] = '[unknown]'
 
     try:
-        d['commit'] = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode('utf-8').strip()
-        d['diff'] = subprocess.check_output(["git", "diff"]).decode('utf-8').strip()
+        git_data['commit'] = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode('utf-8').strip()
+        git_data['diff'] = subprocess.check_output(["git", "diff"]).decode('utf-8').strip()
     except subprocess.CalledProcessError:
         logger.warning("WARNING: Failed to get commit information from git. Run `git status` to debug")
-        d['commit'] = '[unknown]'
-        d['diff'] = '[unknown]'
+        git_data['commit'] = '[unknown]'
+        git_data['diff'] = '[unknown]'
 
-    return d
+    return git_data
 
 # PyYaml doesn't know how to serialized ordereddicts by default, so we add a representer
 # http://stackoverflow.com/questions/16782112/can-pyyaml-dump-dict-items-in-non-alphabetical-order
