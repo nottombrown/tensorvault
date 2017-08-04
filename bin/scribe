@@ -1,20 +1,35 @@
 #! /bin/python3
+import logging
 import subprocess
-
-import click
+import sys
+import time
 
 from tf_scribe.metadata import write_experiment_metadata
 
-@click.command()
-@click.argument('experiment_dir', type=click.Path())
-@click.argument('entrypoint', nargs=-1)
-def run(experiment_dir, entrypoint):
+logger = logging.getLogger('tf-scribe')
+
+def run():
     """
     Write the metadata for an experiment to a the root of the dir where its logs will be written.
     Then execute the experiment.
     """
+    bad_usage_message = "Bad input. Correct usage is `scribe <optional_experiment_dir> -- python entrypoint.py`"
+    if len(sys.argv) < 3:
+        logger.error(bad_usage_message)
+        return 1
+
+    if sys.argv[1] == '--':
+        experiment_dir = "/tmp/scribe_experiments/experiment-%s" % time.strftime("%Y-%m-%d--%H-%M-%S")
+        entrypoint = sys.argv[2:]
+    elif sys.argv[2] == '--':
+        experiment_dir = sys.argv[1]
+        entrypoint = sys.argv[3:]
+    else:
+        logger.error(bad_usage_message)
+        return 1
+
     write_experiment_metadata(entrypoint, experiment_dir)
-    subprocess.check_call(entrypoint)
+    return subprocess.check_call(entrypoint)
 
 if __name__ == '__main__':
     run()
