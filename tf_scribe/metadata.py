@@ -3,11 +3,19 @@ import logging
 import os
 import os.path as osp
 import subprocess
+import time
 from collections import OrderedDict
 
 import yaml
 
 logger = logging.getLogger('tf-scribe')
+
+def get_experiment_dir():
+    try:
+        experiment_dir = os.environ["SCRIBE_DIR"]
+    except KeyError:
+        experiment_dir = "/tmp/scribe_experiments/experiment-%s" % time.strftime("%Y-%m-%d--%H-%M-%S")
+    return experiment_dir
 
 def write_experiment_metadata(entrypoint, exp_dir):
     os.makedirs(exp_dir, exist_ok=True)

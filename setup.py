@@ -19,6 +19,5 @@ setup(name='tf_scribe',
             'pytest ~= 1.4.33',
             'path.py ~= 10.3.1'
         ]
-    },
-    scripts=['bin/scribe']
+    }
 )
