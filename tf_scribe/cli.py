@@ -35,7 +35,7 @@ def collect_git_data():
         d['diff'] = '[unknown]'
     try:
         # Repository is optional, so we fail silently if it's not available
-        d['repository'] = subprocess.check_output(["git", "remote", 'get-url'], stderr=open(os.devnull, 'wb')).decode(
+        d['repository'] = subprocess.check_output(["git", "remote", 'get-url', 'origin'], stderr=open(os.devnull, 'wb')).decode(
             'utf-8').strip()
     except subprocess.CalledProcessError:
         d['repository'] = '[unknown]'
