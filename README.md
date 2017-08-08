@@ -1,4 +1,4 @@
-# Tensorvault
+# Tensorvault [![Build Status](https://travis-ci.org/nottombrown/tensorvault.svg?branch=master)](https://travis-ci.org/nottombrown/tensorvault)
 
 ## Usage
 
