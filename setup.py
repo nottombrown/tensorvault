@@ -6,7 +6,7 @@ if sys.version_info.major != 3:
     print("This module is only compatible with Python 3, but you are running "
           "Python {}. The installation will likely fail.".format(sys.version_info.major))
 
-setup(name='tf_scribe',
+setup(name='tensorvault',
     version='0.0.1',
     install_requires=[
         "click ~= 6.0"

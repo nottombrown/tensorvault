@@ -3,7 +3,7 @@ import tempfile
 
 from path import Path
 
-from tf_scribe.metadata import collect_git_data
+from tensorvault.metadata import collect_git_data
 
 def test_collect_git_data_local():
     git_data = collect_git_data()
