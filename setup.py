@@ -11,7 +11,7 @@ setup(
     packages = ['tensorvault'],
     version='0.0.1',
     install_requires=[
-        "click ~= 6.0"
+        "path.py==10.3"
     ],
     author='Tom B Brown',
     author_email='nottombrown@gmail.com',
