@@ -1,5 +1,5 @@
 language: python
 python:
   - "3.5"
-install: "pip install -e ."
+install: "pip install -e .[tf,test]"
 script: pytest
